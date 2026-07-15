@@ -3,8 +3,6 @@
 
 #include <string>
 #include "../logger/logger.h"
-#include "../logger/logger.h"
-#include "../logger/logger.h"
 
 namespace console {
 

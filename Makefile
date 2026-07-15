@@ -53,7 +53,7 @@ $(TARGET_LIB): $(LIB_OBJ)
 
 $(TARGET_APP): $(APP_OBJ) $(TARGET_LIB)
 	@mkdir -p $(dir $@)
-	$(CXX) -o $@ $< -Lbuild -llogger $(LDFLAGS)
+	$(CXX) -o $@ $(APP_OBJ) -Lbuild -llogger $(LDFLAGS)
 
 $(TARGET_TEST): $(TEST_OBJ) $(TARGET_LIB)
 	@mkdir -p $(dir $@)
