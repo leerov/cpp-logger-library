@@ -52,9 +52,9 @@ $(TARGET_APP): $(APP_OBJ) $(TARGET_LIB)
 	@mkdir -p $(dir $@)
 	$(CXX) -o $@ $(APP_OBJ) -Lbuild -llogger $(LDFLAGS)
 
-$(TARGET_TEST): $(TEST_OBJ) $(TARGET_LIB)
+$(TARGET_TEST): $(TEST_OBJ) $(APP_OBJ) $(TARGET_LIB)
 	@mkdir -p $(dir $@)
-	$(CXX) -o $@ $< -Lbuild -llogger $(LDFLAGS)
+	$(CXX) -o $@ $^ -Lbuild -llogger $(LDFLAGS)
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/logger/%.cpp
 	@mkdir -p $(dir $@)
