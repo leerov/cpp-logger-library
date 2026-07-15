@@ -2,6 +2,7 @@
 #define CONSOLE_HANDLER_H
 
 #include <string>
+#include "../logger/logger.h"
 
 namespace console {
 
