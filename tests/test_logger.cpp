@@ -199,6 +199,11 @@ TEST(error_handling_invalid_file)
 TEST(concurrent_logging)
 {
     const std::string filename = "test_concurrent.log";
+
+    // Clear the file before testing to prevent counting messages from previous runs
+    std::ofstream clear_file(filename, std::ios::trunc);
+    clear_file.close();
+
     Logger logger(filename, Level::INFO);
 
     std::vector<std::thread> threads;
