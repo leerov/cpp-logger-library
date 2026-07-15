@@ -17,12 +17,28 @@ APP_OBJ = $(OBJ_DIR)/main.o
 TEST_OBJ = $(OBJ_DIR)/test_logger.o
 
 .PHONY: all clean lib app test
+.PHONY: all clean lib app test help
 
 all: lib app test
+help:
+	@echo "Available targets:"
+	@echo "  make all        - Build library, app, and tests (default)"
+	@echo "  make lib        - Build dynamic library only (liblogger.so)"
+	@echo "  make app        - Build console application only (logger_app)"
+	@echo "  make test       - Build and run tests"
+	@echo "  make clean      - Remove all build artifacts"
+	@echo ""
+	@echo "Usage examples:"
+	@echo "  make all        # Build everything"
+	@echo "  make test       # Run tests"
+	@echo "  make clean      # Clean up"
 
 lib: $(TARGET_LIB)
 
 app: $(TARGET_APP)
+test: $(TARGET_TEST)
+	@echo "Running tests..."
+	@LD_LIBRARY_PATH=build $(TARGET_TEST)
 
 $(TARGET_LIB): $(LIB_OBJ)
 	@mkdir -p $(dir $@)
@@ -49,4 +65,6 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/app/%.cpp
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 clean:
+	rm -rf $(OBJ_DIR) $(TARGET_LIB) $(TARGET_APP) $(TARGET_TEST)clean:
 	rm -rf $(OBJ_DIR) $(TARGET_LIB) $(TARGET_APP) $(TARGET_TEST)
+	rm -rf test_*.log
