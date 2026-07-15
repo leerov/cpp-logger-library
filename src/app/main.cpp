@@ -29,7 +29,7 @@ int main(int argc, char* argv[])
     std::string logFile = argv[1];
     std::string levelStr = argv[2];
 
-    if (!isValidLevel(levelStr)) {
+    if (!console::isValidLevel(levelStr)) {
         std::cerr << "Error: Invalid level. Use INFO, WARNING, or ERROR" << std::endl;
         return 1;
     }
