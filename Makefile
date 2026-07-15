@@ -13,7 +13,7 @@ APP_SRC = $(SRC_DIR)/app/main.cpp
 TEST_SRC = tests/test_logger.cpp
 
 LIB_OBJ = $(OBJ_DIR)/logger.o
-APP_OBJ = $(OBJ_DIR)/main.o
+APP_OBJ = $(OBJ_DIR)/main.o $(OBJ_DIR)/console_handler.o
 TEST_OBJ = $(OBJ_DIR)/test_logger.o
 
 .PHONY: all clean lib app test
@@ -68,10 +68,6 @@ $(OBJ_DIR)/%.o: tests/%.cpp
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/app/%.cpp
-	@mkdir -p $(dir $@)
-	$(CXX) $(CXXFLAGS) -c $< -o $@
-
-$(OBJ_DIR)/console_handler.o: $(SRC_DIR)/app/console_handler.cpp $(SRC_DIR)/app/console_handler.h
 	@mkdir -p $(dir $@)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
