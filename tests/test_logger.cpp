@@ -147,26 +147,27 @@ TEST(timestamp_format)
     assert(line[1] >= '0' && line[1] <= '9');
     assert(line[2] >= '0' && line[2] <= '9');
     assert(line[3] >= '0' && line[3] <= '9');
-    assert(line[4] == '-');
-    assert(line[5] >= '0' && line[5] <= '9');
+    assert(line[4] >= '0' && line[4] <= '9');
+    assert(line[5] == '-');
     assert(line[6] >= '0' && line[6] <= '9');
-    assert(line[7] == '-');
-    assert(line[8] >= '0' && line[8] <= '9');
+    assert(line[7] >= '0' && line[7] <= '9');
+    assert(line[8] == '-');
     assert(line[9] >= '0' && line[9] <= '9');
-    assert(line[10] == ' ');
-    assert(line[11] >= '0' && line[11] <= '9');
+    assert(line[10] >= '0' && line[10] <= '9');
+    assert(line[11] == ' ');
     assert(line[12] >= '0' && line[12] <= '9');
-    assert(line[13] == ':');
-    assert(line[14] >= '0' && line[14] <= '9');
+    assert(line[13] >= '0' && line[13] <= '9');
+    assert(line[14] == ':');
     assert(line[15] >= '0' && line[15] <= '9');
-    assert(line[16] == ':');
-    assert(line[17] >= '0' && line[17] <= '9');
+    assert(line[16] >= '0' && line[16] <= '9');
+    assert(line[17] == ':');
     assert(line[18] >= '0' && line[18] <= '9');
-    assert(line[19] == '.');
-    assert(line[20] >= '0' && line[20] <= '9');
+    assert(line[19] >= '0' && line[19] <= '9');
+    assert(line[20] == '.');
     assert(line[21] >= '0' && line[21] <= '9');
     assert(line[22] >= '0' && line[22] <= '9');
-    assert(line[23] == ']');
+    assert(line[23] >= '0' && line[23] <= '9');
+    assert(line[24] == ']');
 }
 
 // Test 8: Level conversion to string
