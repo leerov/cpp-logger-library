@@ -1,6 +1,6 @@
 CXX = g++
 CXXFLAGS = -std=c++17 -Wall -Wextra -O2 -fPIC
-LDFLAGS = -pthread
+LDFLAGS = -pthread -lstdc++
 
 TARGET_LIB = build/liblogger.so
 TARGET_APP = build/logger_app
