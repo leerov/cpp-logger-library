@@ -19,9 +19,15 @@ logger::Level parseLevel(const std::string& str)
 
 bool isValidLevel(const std::string& str)
 {
-    std::string upper = str;
-    std::transform(upper.begin(), upper.end(), upper.begin(), ::toupper);
-    return upper == "INFO" || upper == "WARNING" || upper == "ERROR";
+    std::string trimmed = str;
+    size_t start = trimmed.find_first_not_of(" \t\n\r");
+    size_t end = trimmed.find_last_not_of(" \t\n\r");
+    if (start == std::string::npos) {
+        return false;
+    }
+    trimmed = trimmed.substr(start, end - start + 1);
+    std::transform(trimmed.begin(), trimmed.end(), trimmed.begin(), ::toupper);
+    return trimmed == "INFO" || trimmed == "WARNING" || trimmed == "ERROR";
 }
 
 std::pair<std::string, logger::Level> parseInput(const std::string& line, logger::Level defaultLevel)
