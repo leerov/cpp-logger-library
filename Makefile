@@ -52,7 +52,7 @@ $(TARGET_APP): $(APP_OBJ) $(TARGET_LIB)
 	@mkdir -p $(dir $@)
 	$(CXX) -o $@ $(APP_OBJ) -Lbuild -llogger $(LDFLAGS)
 
-$(TARGET_TEST): $(TEST_OBJ) $(TARGET_LIB)
+$(TARGET_TEST): $(TEST_OBJ) $(OBJ_DIR)/console_handler.o $(TARGET_LIB)
 	@mkdir -p $(dir $@)
 	$(CXX) -o $@ $^ -Lbuild -llogger $(LDFLAGS)
 
