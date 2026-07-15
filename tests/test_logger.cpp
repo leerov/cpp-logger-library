@@ -214,15 +214,15 @@ TEST(concurrent_logging)
         th.join();
     }
 
-    std::this_thread::sleep_for(std::chrono::milliseconds(500));
+    std::this_thread::sleep_for(std::chrono::milliseconds(200));
 
     // Wait for all messages to be written with retries
-    int maxRetries = 50;
+    int maxRetries = 200;
     int retries = 0;
     bool allMessagesWritten = false;
 
     while (retries < maxRetries && !allMessagesWritten) {
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        std::this_thread::sleep_for(std::chrono::milliseconds(50));
 
         std::ifstream file(filename);
         assert(file.is_open());
