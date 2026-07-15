@@ -141,7 +141,7 @@ TEST(timestamp_format)
     assert(file.is_open());
     std::string line;
     std::getline(file, line);
-    assert(line.size() >= 20);
+    assert(line.size() >= 24);
     assert(line[0] == '[');
     assert(line[1] >= '0' && line[1] <= '9');
     assert(line[2] >= '0' && line[2] <= '9');
@@ -161,6 +161,11 @@ TEST(timestamp_format)
     assert(line[16] == ':');
     assert(line[17] >= '0' && line[17] <= '9');
     assert(line[18] >= '0' && line[18] <= '9');
+    assert(line[19] == '.');
+    assert(line[20] >= '0' && line[20] <= '9');
+    assert(line[21] >= '0' && line[21] <= '9');
+    assert(line[22] >= '0' && line[22] <= '9');
+    assert(line[23] == ']');
 }
 
 // Test 8: Level conversion to string
