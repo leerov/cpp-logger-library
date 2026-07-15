@@ -142,7 +142,7 @@ TEST(timestamp_format)
     assert(file.is_open());
     std::string line;
     std::getline(file, line);
-    assert(line.size() >= 24);
+    assert(line.size() >= 29);
     assert(line[0] == '[');
     assert(line[1] >= '0' && line[1] <= '9');
     assert(line[2] >= '0' && line[2] <= '9');
