@@ -39,6 +39,13 @@ app: $(TARGET_APP)
 test: $(TARGET_TEST)
 	@echo "Running tests..."
 	@LD_LIBRARY_PATH=build $(TARGET_TEST)
+test: $(TARGET_TEST)
+	@echo "Running tests..."
+	@LD_LIBRARY_PATH=build $(TARGET_TEST)
+
+test-clean: clean
+	@rm -rf test_*.log
+	@echo "All test logs cleaned"
 
 $(TARGET_LIB): $(LIB_OBJ)
 	@mkdir -p $(dir $@)
@@ -64,7 +71,13 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/app/%.cpp
 	@mkdir -p $(dir $@)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
+$(OBJ_DIR)/console_handler.o: $(SRC_DIR)/app/console_handler.cpp $(SRC_DIR)/app/console_handler.h
+	@mkdir -p $(dir $@)
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
 clean:
-	rm -rf $(OBJ_DIR) $(TARGET_LIB) $(TARGET_APP) $(TARGET_TEST)clean:
 	rm -rf $(OBJ_DIR) $(TARGET_LIB) $(TARGET_APP) $(TARGET_TEST)
+
+test-clean:
 	rm -rf test_*.log
+	@echo "All test logs cleaned"

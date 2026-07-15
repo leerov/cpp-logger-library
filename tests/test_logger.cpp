@@ -7,6 +7,7 @@
 #include <thread>
 #include <cassert>
 #include <algorithm>
+#include "../src/app/console_handler.h"
 
 using namespace logger;
 
@@ -245,6 +246,86 @@ TEST(change_level_during_logging)
     assertFileContains(filename, "Message 3 error");
 }
 
+// Test 12: Console parser - parseLevel function
+TEST(console_parse_level)
+{
+    assert(console::parseLevel("INFO") == logger::Level::INFO);
+    assert(console::parseLevel("WARNING") == logger::Level::WARNING);
+    assert(console::parseLevel("ERROR") == logger::Level::ERROR);
+    assert(console::parseLevel("info") == logger::Level::INFO);
+    assert(console::parseLevel("Warning") == logger::Level::WARNING);
+    assert(console::parseLevel("error") == logger::Level::ERROR);
+    assert(console::parseLevel("INVALID") == logger::Level::INFO);
+    assert(console::parseLevel("") == logger::Level::INFO);
+}
+
+// Test 13: Console parser - isValidLevel function
+TEST(console_is_valid_level)
+{
+    assert(console::isValidLevel("INFO") == true);
+    assert(console::isValidLevel("WARNING") == true);
+    assert(console::isValidLevel("ERROR") == true);
+    assert(console::isValidLevel("info") == true);
+    assert(console::isValidLevel("Warning") == true);
+    assert(console::isValidLevel("error") == true);
+    assert(console::isValidLevel("INVALID") == false);
+    assert(console::isValidLevel("") == false);
+    assert(console::isValidLevel("INFO ") == true);
+}
+
+// Test 14: Console parser - parseInput function
+TEST(console_parse_input)
+{
+    logger::Level defaultLevel = logger::Level::INFO;
+
+    auto result1 = console::parseInput("Test message", defaultLevel);
+    assert(result1.first == "Test message");
+    assert(result1.second == logger::Level::INFO);
+
+    auto result2 = console::parseInput("Error message ERROR", defaultLevel);
+    assert(result2.first == "Error message");
+    assert(result2.second == logger::Level::ERROR);
+
+    auto result3 = console::parseInput("Warning WARNING", defaultLevel);
+    assert(result3.first == "Warning");
+    assert(result3.second == logger::Level::WARNING);
+
+    auto result4 = console::parseInput("Multiple words in message INFO", defaultLevel);
+    assert(result4.first == "Multiple words in message");
+    assert(result4.second == logger::Level::INFO);
+
+    auto result5 = console::parseInput("", defaultLevel);
+    assert(result5.first == "");
+    assert(result5.second == logger::Level::INFO);
+
+    auto result6 = console::parseInput("exit", defaultLevel);
+    assert(result6.first == "exit");
+    assert(result6.second == logger::Level::INFO);
+}
+
+// Test 15: Logger - file permission handling
+TEST(file_permission_handling)
+{
+    // Создаем файл только для чтения
+    const std::string filename = "test_readonly.log";
+    std::ofstream testFile(filename);
+    testFile << "test" << std::endl;
+    testFile.close();
+
+    // Меняем права на только чтение (только в Unix-подобных системах)
+    // В Windows этот тест будет пропущен
+    #ifdef __unix__
+    chmod(filename.c_str(), 0444);
+
+    Logger logger(filename, logger::Level::INFO);
+    // Должен вывести предупреждение, но не упасть
+    logger.log("Test message", logger::Level::INFO);
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+
+    // Восстанавливаем права для удаления
+    chmod(filename.c_str(), 0644);
+    #endif
+}
 int main()
 {
     std::cout << "Starting logger library tests..." << std::endl;
@@ -261,6 +342,10 @@ int main()
     RUN_TEST(error_handling_invalid_file);
     RUN_TEST(concurrent_logging);
     RUN_TEST(change_level_during_logging);
+    RUN_TEST(console_parse_level);
+    RUN_TEST(console_is_valid_level);
+    RUN_TEST(console_parse_input);
+    RUN_TEST(file_permission_handling);
 
     std::cout << "================================" << std::endl;
     std::cout << "All tests PASSED!" << std::endl;

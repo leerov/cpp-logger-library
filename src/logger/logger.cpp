@@ -10,6 +10,15 @@ Logger::Logger(const std::string& filename, Level defaultLevel)
     , stopFlag_(false)
 {
     worker_ = std::thread(&Logger::workerThread, this);
+    // Проверяем возможность записи в файл
+    try {
+        std::ofstream testFile(filename, std::ios::app);
+        if (!testFile.is_open()) {
+            std::cerr << "Warning: Cannot open log file for writing: " << filename << std::endl;
+        }
+    } catch (const std::exception& e) {
+        std::cerr << "Warning: Exception while checking log file: " << e.what() << std::endl;
+    }
 }
 
 Logger::~Logger()
@@ -75,23 +84,46 @@ void Logger::workerThread()
 
 void Logger::writeLogEntry(const LogEntry& entry)
 {
-    try {
-        std::ofstream file(filename_, std::ios::app);
-        if (!file.is_open()) {
-            std::cerr << "Error: Failed to open log file: " << filename_ << std::endl;
+    // Максимальное количество попыток переподключения
+    const int maxRetries = 3;
+    int retryCount = 0;
+
+    while (retryCount < maxRetries) {
+        try {
+            std::ofstream file(filename_, std::ios::app);
+            if (!file.is_open()) {
+                std::cerr << "Error: Failed to open log file: " << filename_
+                          << " (attempt " << (retryCount + 1) << "/" << maxRetries << ")" << std::endl;
+                retryCount++;
+                std::this_thread::sleep_for(std::chrono::milliseconds(100));
+                continue;
+            }
+
+            file << formatTimestamp(entry.timestamp)
+                 << " [" << levelToString(entry.level) << "] "
+                 << entry.message << std::endl;
+
+            if (file.fail()) {
+                std::cerr << "Error: Failed to write to log file: " << filename_
+                          << " (attempt " << (retryCount + 1) << "/" << maxRetries << ")" << std::endl;
+                file.close();
+                retryCount++;
+                std::this_thread::sleep_for(std::chrono::milliseconds(100));
+                continue;
+            }
+
+            // Успешная запись
             return;
-        }
 
-        file << formatTimestamp(entry.timestamp)
-             << " [" << levelToString(entry.level) << "] "
-             << entry.message << std::endl;
-
-        if (file.fail()) {
-            std::cerr << "Error: Failed to write to log file: " << filename_ << std::endl;
+        } catch (const std::exception& e) {
+            std::cerr << "Error: Exception while writing log: " << e.what()
+                      << " (attempt " << (retryCount + 1) << "/" << maxRetries << ")" << std::endl;
+            retryCount++;
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
         }
-    } catch (const std::exception& e) {
-        std::cerr << "Error: Exception while writing log: " << e.what() << std::endl;
     }
+
+    std::cerr << "Error: Failed to write log entry after " << maxRetries << " attempts" << std::endl;
 }
 
 std::string Logger::formatTimestamp(const std::chrono::system_clock::time_point& tp) const
