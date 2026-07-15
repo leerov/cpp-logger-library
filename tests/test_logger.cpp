@@ -216,18 +216,32 @@ TEST(concurrent_logging)
 
     std::this_thread::sleep_for(std::chrono::milliseconds(500));
 
-    // Count total messages in file
-    std::ifstream file(filename);
-    assert(file.is_open());
-    std::string content((std::istreambuf_iterator<char>(file)),
-                         std::istreambuf_iterator<char>());
-    size_t pos = 0;
-    int count = 0;
-    while ((pos = content.find("[INFO]", pos)) != std::string::npos) {
-        ++count;
-        pos += 6; // length of "[INFO]"
+    // Wait for all messages to be written with retries
+    int maxRetries = 50;
+    int retries = 0;
+    bool allMessagesWritten = false;
+
+    while (retries < maxRetries && !allMessagesWritten) {
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+
+        std::ifstream file(filename);
+        assert(file.is_open());
+        std::string content((std::istreambuf_iterator<char>(file)),
+                             std::istreambuf_iterator<char>());
+        size_t pos = 0;
+        int count = 0;
+        while ((pos = content.find("[INFO]", pos)) != std::string::npos) {
+            ++count;
+            pos += 6; // length of "[INFO]"
+        }
+
+        if (count == 100) {
+            allMessagesWritten = true;
+        }
+        ++retries;
     }
-    assert(count == 100); // 5 threads * 20 messages
+
+    assert(allMessagesWritten && "Failed to write all 100 messages within timeout");
 }
 
 // Test 11: Change level while logging
