@@ -102,6 +102,7 @@ void Logger::writeLogEntry(const LogEntry& entry)
             file << formatTimestamp(entry.timestamp)
                  << " [" << levelToString(entry.level) << "] "
                  << entry.message << std::endl;
+            file.flush();
 
             if (file.fail()) {
                 std::cerr << "Error: Failed to write to log file: " << filename_
