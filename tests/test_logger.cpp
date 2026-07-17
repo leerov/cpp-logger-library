@@ -7,6 +7,8 @@
 #include <thread>
 #include <cassert>
 #include <algorithm>
+#include <vector>
+#include <sys/stat.h>
 #include "../src/app/console_handler.h"
 
 using namespace logger;

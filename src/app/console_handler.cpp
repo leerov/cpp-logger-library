@@ -2,6 +2,9 @@
 #include "../logger/logger.h"
 #include <algorithm>
 #include <cctype>
+#include <sstream>
+#include <vector>
+#include <utility>
 
 namespace console {
 
